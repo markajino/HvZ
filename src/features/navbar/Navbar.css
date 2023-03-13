@@ -1,0 +1,43 @@
+
+
+
+.navbar-container {
+    width: 100vw;
+    height: 3.645vw;
+    background-color: grey;
+    margin:0;
+    
+
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    
+}
+
+.nav-btn {
+     margin: 0.52vw;
+}
+
+.navbar-heading {
+    font-size: 1.56vw;
+    padding-left: 0.781vw;
+    margin:0;
+}
+
+.button-space {
+  margin-right: 0.781vw;
+    display: flex;
+    align-items: center;
+}
+
+.game-table {
+    display: flex;
+ 
+    align-items: center;
+    flex-direction: column;
+    margin-top:2.604vw;
+}
+
+.games-heading {
+    font-size: 40px;
+}

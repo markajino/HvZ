@@ -1,10 +1,12 @@
 import React from 'react';
 
+import LandingPage from  "./features/landingpage/LandingPage"
+
 
 function App() {
   return (
-    <div className="App">
-      
+    <div>
+      <LandingPage />
     </div>
   );
 }
