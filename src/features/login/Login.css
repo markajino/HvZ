@@ -1,0 +1,33 @@
+.auth-box {
+    width: 350px;
+   
+   
+    background: linear-gradient(to left, #191919, #b41313) ;
+    color:white;
+    margin-top:200px;
+    padding:20px;
+    padding-bottom:60px;
+    border-radius : 10px;
+    box-shadow:2px 2px 10px #ccc;
+   
+}
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+
+}
+
+body {
+    background-image: url(../../assets/zombies-wallpaper.jpg);
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+
+
+.auth-box {
+    text-align: center;
+    font-size: 36px;
+
+}

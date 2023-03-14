@@ -15,7 +15,7 @@ export const Navbar = (props) => {
 					<Button
 						type="primary"
 						className="nav-btn"
-						style={{ backgroundColor: "green" }}
+						style={{ backgroundColor: "#000000", boxShadow: "0px 0px 5px 0.3" }}
 						size="large"
 					>
 						Register
@@ -24,12 +24,13 @@ export const Navbar = (props) => {
 						className="nav-btn"
 						style={{ backgroundColor: "white", color: "black" }}
 						size="large"
+						href="/login"
 					>
 						Login
 					</Button>
 
-					<Tooltip title="hello this is tooltip">
-						<QuestionOutlined size={"large"} />
+					<Tooltip title="hello this is tooltip hello this is toolti hello this is toolti hello this is toolti hello this is toolti">
+						<QuestionOutlined size={"32px"} style={{ fontSize: "28px" }} />
 					</Tooltip>
 				</div>
 			</div>
