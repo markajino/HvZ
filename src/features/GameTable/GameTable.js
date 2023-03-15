@@ -1,6 +1,7 @@
 import { Table } from "antd";
 
 import { connect } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import "./GameTable.css";
 
 const columns = [
@@ -45,6 +46,7 @@ const data = [
 		state: "Register",
 		players: "4/5",
 		created_at: "10/3/23 10:30 am",
+		
 	},
 	{
 		key: "1", //this is the game id we will get from the database
@@ -80,7 +82,9 @@ const onChange = (pagination, filters, sorter, extra) => {
 	console.log("params", pagination, filters, sorter, extra);
 };
 
+
 export const GameTable = (props) => {
+	const navigate = useNavigate()
 	return (
 		<div className="game-table-container">
 			<Table columns={columns} dataSource={data} onChange={onChange} />

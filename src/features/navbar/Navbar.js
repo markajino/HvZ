@@ -17,6 +17,7 @@ export const Navbar = (props) => {
 						className="nav-btn"
 						style={{ backgroundColor: "#000000", boxShadow: "0px 0px 5px 0.3" }}
 						size="large"
+						href="/register"
 					>
 						Register
 					</Button>
