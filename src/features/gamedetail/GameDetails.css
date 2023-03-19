@@ -1,0 +1,34 @@
+.game-title {
+    text-align: center;
+}
+
+.game-btn-container button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+.main-container {
+    display: flex;
+
+}
+.map-box {
+   width :  70%
+
+}
+.game-title {
+    font-size: 40px;
+}
+.chat-tab-box {
+    width: 450px;
+    height: 500px;
+    padding: 20px;
+    background-color: lightgray;
+    border-radius: 8px;
+}
+.current-chat {
+    width: 28vw;
+    height : 800px;
+    background: red;
+}
