@@ -1,26 +1,52 @@
 import React, { useState } from "react";
 import Navbar from "../navbar/Navbar";
-import { Tabs, Modal, List } from "antd";
+import { Tabs, Modal, List, Button } from "antd";
+import { Link } from "react-router-dom";
 import { useGeolocated } from "react-geolocated";
 import Map from "../Map";
 import "./GameDetails.css";
 import Input from "antd/es/input/Input";
 
-const data = ["John.", "doe.", "Random Name", "george", "Los Angeles "];
+
 const ListItems = () => {
+	const data = [{
+		name:"John",
+		faction: "zombie"
+	},
+	{
+		name:"doe",
+		faction: "human"
+	},
+	{
+		name:"Random Name",
+		faction: "zombie"
+	},
+	{
+		name:"george",
+		faction: "human"
+	}
+	]
+
+	const [players,setPlayers] = useState(data)
 	return (
 		<div class="list-tab-box">
 			<List
 				header={
 					<div className="sidebar-buttons">
-						<button>All</button>
-						<button>Humans</button>
-						<button>Zombies</button>
+						<button  onClick={()=> {
+							setPlayers(data)
+						}}>All</button>
+						<button onClick={()=> {
+							setPlayers(data.filter((player)=>player.faction ==="human"))
+						}}>Humans</button>
+						<button  onClick={()=> {
+							setPlayers(data.filter((player)=>player.faction ==="zombie"))
+						}}>Zombies</button>
 					</div>
 				}
 				bordered
-				dataSource={data}
-				renderItem={(item) => <List.Item>{item}
+				dataSource={players}
+				renderItem={(item) => <List.Item>{item.name}
 				</List.Item>}
 			//style={{ width: "450px" }}
 			/>
@@ -66,6 +92,7 @@ function GameDetails() {
 	];
 	const [open, setOpen] = useState(false);
 	const [openInfo, setOpenInfo] = useState(false);
+	const [openEditGame, setOpenEditGame]= useState(false)
 	const showModal = () => {
 		setOpen(true);
 	};
@@ -78,6 +105,13 @@ function GameDetails() {
 	const hideInfoModal = () => {
 		setOpenInfo(false);
 	};
+	const showEditModal = () => {
+		setOpenEditGame(true);
+	};
+	const hideEditModal = () => {
+		setOpenEditGame(false);
+	};
+	const Role = "player"
 	return (
 		<div>
 			<Navbar />
@@ -85,7 +119,8 @@ function GameDetails() {
 
 			<div className="game-btn-container">
 				<button onClick={showModal}>Leave Game</button>
-				<button onClick={showInfoModal}>Player Info</button>
+				{Role !== "admin" &&<button onClick={showInfoModal}>Player Info</button>}
+				{Role === "admin" && <Button style={{ marginBottom:"10px"}}  onClick={()=> setOpenEditGame(true)}>Edit Game</Button>}
 			</div>
 			<div className="main-container">
 				<div className="map-box">
@@ -107,6 +142,26 @@ function GameDetails() {
 			>
 				<p>Are you sure you want to leave the game?</p>
 			</Modal>
+			<Modal
+					title="Edit Game"
+					open={openEditGame}
+					onOk={hideEditModal}
+					onCancel={hideEditModal}
+					okText="Done"
+				>
+					<div>
+						<label>
+						Game Title
+						<Input placeholder="Game title" />
+						</label>
+						<label>
+						Game Status
+						<Input placeholder="Game Status" />
+						</label>
+					</div>
+
+
+				</Modal>
 			{faction === "human" ?
 				<Modal
 					title="Faction: Human"

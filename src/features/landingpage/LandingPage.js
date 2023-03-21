@@ -10,6 +10,7 @@ export const LandingPage = (props) => {
 			<div className="game-table">
 				<p className="games-heading">Games</p>
 				<GameTable />
+				
 			</div>
 		</div>
 	);

@@ -1,7 +1,8 @@
 import { Table } from "antd";
+import { Button } from "antd/es/radio";
 
 import { connect } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./GameTable.css";
 
 const columns = [
@@ -77,17 +78,20 @@ const data = [
 		created_at: "10/3/23 10:30 am",
 	},
 ];
-
+const Role = "admin"
 const onChange = (pagination, filters, sorter, extra) => {
 	console.log("params", pagination, filters, sorter, extra);
 };
 
 export const GameTable = (props) => {
-	const navigate = useNavigate()
+
 	return (
-		<div className="game-table-container">
-			<Table columns={columns} dataSource={data} onChange={onChange} />
-		</div>
+		<div >
+			{Role === "admin" && <Button style={{ marginBottom:"10px"}} ><Link to={"/create-game"}>Create Game</Link></Button>}
+			<div className="game-table-container">
+				<Table columns={columns} dataSource={data} onChange={onChange} />
+			</div>
+		</div >
 	);
 };
 

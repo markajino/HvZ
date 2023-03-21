@@ -8,6 +8,7 @@ import LandingPage from "./features/landingpage/LandingPage";
 import Login from "./features/login/Login";
 import GameDetails from "./features/gamedetail/GameDetails"
 import Register from "./features/register/Register"
+import CreateGame from "./features/createGame/CreateGame";
 
 const router = createBrowserRouter([
 	{
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
 		path: "game/",
 		element: <GameDetails />,
 	},
+	{
+		path:"create-game",
+		element : <CreateGame />
+	}
 
 ]);
 

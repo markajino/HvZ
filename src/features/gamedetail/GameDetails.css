@@ -21,7 +21,7 @@
 .game-title {
     font-size: 40px;
 }
-.chat-tab-box {
+.chat-tab-box, .list-tab-box{
     width: 27vw;
     height: 31vw;
     padding: 20px;
@@ -33,13 +33,4 @@
     width: 28vw;
     height : 800px;
     background: red;
-}
-
-.list-tab-box {
-    width: 27vw;
-    height: 31vw;
-    padding: 20px;
-    margin:20px;
-    background-color: lightgray;
-    border-radius: 8px;
 }
