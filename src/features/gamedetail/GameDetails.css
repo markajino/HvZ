@@ -1,36 +1,38 @@
 .game-title {
-    text-align: center;
+  text-align: center;
 }
 
 .game-btn-container button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    margin: 10px;
+  margin-left: 20px;
 }
 
 .main-container {
-    display: flex;
-
+  display: flex;
 }
 .map-box {
-   width :  70%
-
+  width: 70%;
+  margin-top: 2vw;
 }
 
 .game-title {
-    font-size: 40px;
+  font-size: 40px;
 }
-.chat-tab-box, .list-tab-box{
-    width: 27vw;
-    height: 31vw;
-    padding: 20px;
-    margin:20px;
-    background-color: lightgray;
-    border-radius: 8px;
+.chat-tab-box,
+.list-tab-box {
+  width: 27vw;
+  height: 31vw;
+  padding: 20px;
+  margin: 20px;
+  background-color: lightgray;
+  border-radius: 8px;
+  overflow: scroll;
 }
 .current-chat {
-    width: 28vw;
-    height : 800px;
-    background: red;
+  width: 28vw;
+  height: 800px;
+  background: red;
+}
+
+.game-button {
+  background-color: #e42f2f;
 }
