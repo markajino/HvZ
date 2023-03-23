@@ -17,19 +17,7 @@ const containerStyle = {
   margin: "30px auto",
 };
 
-const options = {
-  strokeColor: "#FF0000",
-  strokeOpacity: 0.8,
-  strokeWeight: 2,
-  fillColor: "#FF0000",
-  fillOpacity: 0.35,
-  clickable: false,
-  draggable: false,
-  editable: false,
-  visible: true,
-  radius: 30000,
-  zIndex: 1,
-};
+
 
 function CreateGame() {
   const center = { lat: 37.9838, lng: 23.7275 };
@@ -55,13 +43,42 @@ function CreateGame() {
     setMap(null);
   }, []);
 
+  // const handleMapClick = (e) => {
+  //   setCenterPoint({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+  // };
   const handleMapClick = (e) => {
-    setCenterPoint({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+    const newCenterPoint = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+    console.log("New center point:", newCenterPoint);
+    setCenterPoint(newCenterPoint);
   };
 
-  const handleRadiusChange = (e) => {
-    setRadius(parseInt(e.target.value));
+
+  // const handleRadiusChange = (e) => {
+  //   setRadius(parseInt(e.target.value));
+  // };
+  const handleRadiusChange = (value) => {
+    const newRadius = parseInt(value);
+    console.log("New radius:", newRadius);
+    setRadius(newRadius);
   };
+
+
+  const options = {
+    strokeColor: "#FF0000",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: "#FF0000",
+    fillOpacity: 0.35,
+    clickable: false,
+    draggable: false,
+    editable: false,
+    visible: true,
+    //radius: 30000,
+    radius: radius,
+    zIndex: 1,
+  };
+
+
   return isLoaded ? (
     <div>
       <Navbar />
@@ -72,6 +89,11 @@ function CreateGame() {
         zoom={10}
         onClick={handleMapClick}
         onUnmount={onUnmount}
+        options={{
+          mapTypeControl: false,
+          fullscreenControl: false,
+          streetViewControl: false,
+        }}
       >
         <Marker position={centerPoint} />
         <Circle center={centerPoint} radius={radius} options={options} />
@@ -90,9 +112,9 @@ function CreateGame() {
             max="10000"
             value={radius}
             style={{ color: "red" }}
-            onChange={handleRadiusChange}
+            //onChange={handleRadiusChange}
+            onChange={(e) => handleRadiusChange(e.target.value)}
           />
-
           <div>{radius} meters</div>
         </div>
         <Space direction="vertical" size={"large"} className="game-details">

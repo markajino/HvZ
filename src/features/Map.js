@@ -31,11 +31,18 @@ function Map({ width, height, lat, lng }) {
     setMap(null);
   }, []);
 
+  const options = {
+    disableDefaultUI: true, // disable all default UI controls
+    zoomControl: true, // enable zoom control
+    gestureHandling: "cooperative" // enable touch gestures
+  };
+
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
       zoom={9}
+      options={options}
       onLoad={onLoad}
       onUnmount={onUnmount}
     >
