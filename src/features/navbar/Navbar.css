@@ -1,55 +1,56 @@
-
-
-
 .navbar-container {
-    width: 100vw;
-    height: 3.645vw;
-    background: linear-gradient(to left, #191919, #b41313) ;
-    color:white;
-    margin:0;
-    animation: gradient-animation 5s ease-in-out infinite;
-    
+  width: 100vw;
+  height: 3.645vw;
+  background: linear-gradient(to left, #191919, #b41313);
+  color: white;
+  margin: 0;
+  animation: gradient-animation 5s ease-in-out infinite;
 
-    display:flex;
-    align-items: center;
-    justify-content: space-between;
-    
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 @keyframes gradient-animation {
-    0% {
-        background-position: 0 50%;
-    }
-    100% {
-        background-position: 100% 50%;
-    }
-    
+  0% {
+    background-position: 0 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 .nav-btn {
-     margin: 0.52vw;
+  margin: 0.52vw;
 }
 
 .navbar-heading {
-    font-size: 1.56vw;
-    padding-left: 0.781vw;
-    margin:0;
+  font-size: 1.56vw;
+  padding-left: 0.781vw;
+  margin: 0;
 }
 
 .button-space {
   margin-right: 0.781vw;
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+}
+
+.button-space-loggedIn {
+  margin-right: 3vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .game-table {
-    display: flex;
- 
-    align-items: center;
-    flex-direction: column;
-    margin-top:2.604vw;
+  display: flex;
+
+  align-items: center;
+  flex-direction: column;
+  margin-top: 2.604vw;
 }
 
 .games-heading {
-    font-size: 40px;
+  font-size: 40px;
 }

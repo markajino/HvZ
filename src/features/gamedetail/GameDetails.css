@@ -17,16 +17,80 @@
 .game-title {
   font-size: 40px;
 }
+.list-container {
+  background-color: white;
+  width: 100%;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
 .chat-tab-box,
-.list-tab-box {
+.list-tab-box,
+.squads-tab-box {
   width: 27vw;
   height: 31vw;
   padding: 20px;
   margin: 20px;
-  background-color: lightgray;
+  background: linear-gradient(to left, #191919, #b41313);
+  animation: gradient-animation 1s ease-in-out infinite;
+  color: white;
   border-radius: 8px;
   overflow: scroll;
+  /*border: black solid 1px;
+  */
+  box-shadow: 0px 0px 10px gray;
+  -webkit-animation: gradient-animation 1s ease-in-out infinite;
 }
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+.squads-box-details {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.squads-title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.squads-inputs {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.squad-join-box {
+  background-color: rgb(246, 246, 246);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  width: 27vw;
+  height: 15vw;
+}
+.squad-join-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.squads-inputfield {
+  margin-bottom: 10px;
+}
+
 .current-chat {
   width: 28vw;
   height: 800px;
@@ -35,4 +99,35 @@
 
 .game-button {
   background-color: #e42f2f;
+}
+
+.squad-join-box {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0px 0px 10px gray inset;
+}
+.squad-join-title {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0% !important;
+}
+
+.chats-container {
+  width: 27vw;
+  height: 27.2vw;
+  border-radius: 10px;
+  margin-top: 2vw;
+  background-color: white;
+  border: 1px solid black;
+
+  box-shadow: 0px 0px 15px gray inset;
+}
+
+:where(.css-dev-only-do-not-override-mxhywb).ant-tabs
+  .ant-tabs-tab.ant-tabs-tab-active
+  .ant-tabs-tab-btn {
+  color: #000000;
+  text-shadow: 0 0 0.25px currentcolor;
 }

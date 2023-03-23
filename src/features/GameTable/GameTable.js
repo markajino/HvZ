@@ -2,11 +2,13 @@ import { Table, Button, Modal, Space } from "antd";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Link, Navigate, redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Map from "../Map";
 import "./GameTable.css";
 
 export const GameTable = (props) => {
-  const Role = "admin";
+  const user = useSelector((state) => state.user);
+  const Role = user.role;
 
   const [openjoinGameModal, setOpenjoinGameModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
