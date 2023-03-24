@@ -34,7 +34,8 @@ function Map({ width, height, lat, lng }) {
   const options = {
     disableDefaultUI: true, // disable all default UI controls
     zoomControl: true, // enable zoom control
-    gestureHandling: "cooperative" // enable touch gestures
+    gestureHandling: "cooperative", // enable touch gestures
+    mapId: '9eec87d694dcdb5',
   };
 
   return isLoaded ? (

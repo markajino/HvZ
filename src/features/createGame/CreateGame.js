@@ -17,6 +17,13 @@ const containerStyle = {
   margin: "30px auto",
 };
 
+const options = {
+  mapId: '9eec87d694dcdb5',
+  mapTypeControl: false,
+  fullscreenControl: false,
+  streetViewControl: false,
+};
+
 function Map() {
   const center = { lat: 37.9838, lng: 23.7275 };
 
@@ -64,11 +71,7 @@ function Map() {
               onClick={handleMapClick}
               // onLoad={onLoad}
               onUnmount={onUnmount}
-              options={{
-                mapTypeControl: false,
-                fullscreenControl: false,
-                streetViewControl: false,
-              }}
+              options={options}
             >
               <div>
                 <Marker position={centerPoint} />
