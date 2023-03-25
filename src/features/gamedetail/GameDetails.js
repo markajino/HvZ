@@ -10,6 +10,7 @@ import Squads from "../squads/Squads";
 import Map from "../Map";
 import "./GameDetails.css";
 import Input from "antd/es/input/Input";
+import TextArea from "antd/es/input/TextArea";
 
 function GameDetails() {
   const user = useSelector((state) => state.user);
@@ -27,11 +28,18 @@ function GameDetails() {
   const [openEditGame, setOpenEditGame] = useState(false);
 
   const [openSquadModal, setOpenSquadModal] = useState(false);
+  const [openJoinSquadModal, setOpenJoinSquadModal] = useState(false);
   const showSquadModal = () => {
     setOpenSquadModal(true);
   };
   const hideSquadModal = () => {
     setOpenSquadModal(false);
+  };
+  const hideJoinSquadModal = () => {
+    setOpenJoinSquadModal(false);
+  };
+  const showJoinSquadModal = () => {
+    setOpenJoinSquadModal(true);
   };
   const showModal = () => {
     setOpen(true);
@@ -71,6 +79,9 @@ function GameDetails() {
           openSquadModal={openSquadModal}
           showSquadModal={showSquadModal}
           hideSquadModal={hideSquadModal}
+          showJoinSquadModal={showJoinSquadModal}
+          hideJoinSquadModal={hideJoinSquadModal}
+          openJoinSquadModal={openJoinSquadModal}
         />
       ),
     },
@@ -166,16 +177,82 @@ function GameDetails() {
           onOk={hideInfoModal}
           onCancel={hideInfoModal}
           okText="Done"
+          footer={null}
         >
-          <label>
-            Enter bite code
-            <input />
-          </label>
-          <Button>Register kill</Button>
           <div>Were you patient zero : no</div>
-          <div>
-            <p>Latitude: {coords?.latitude} </p>
-            <p>Longitude: {coords?.longitude}</p>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <p
+              style={{
+                display: "flex",
+                fontSize: "16px",
+                alignItems: "center",
+                // width: "60%",
+                marginRight: "5px",
+              }}
+            >
+              Latitude:
+            </p>
+            <Input placeholder="Enter Latitude" />
+            <p
+              style={{
+                display: "flex",
+                fontSize: "16px",
+                margin: "10px",
+                alignItems: "center",
+                // width: "60%",
+              }}
+            >
+              Longitude:
+            </p>
+            <Input placeholder="Enter Longitude" />
+          </div>
+          <p
+            style={{
+              // display: "flex",
+              fontSize: "16px",
+              margin: "0px",
+              // margin: "10px",
+              // alignItems: "center",
+              // textAlign: "center",
+              // width: "60%",
+            }}
+          >
+            Description
+          </p>
+          <TextArea placeholder="Description of the kill" />
+          <div
+            style={{
+              display: "flex",
+              // flexDirection: "column",
+              alignItems: "center",
+
+              width: "100%",
+              justifyContent: "space-between",
+            }}
+          >
+            <p
+              style={{
+                width: "60%",
+              }}
+            >
+              Enter bite code:
+            </p>
+
+            <Input placeholder="Bite code of the human" />
+            <Button
+              danger
+              type="primary"
+              style={{
+                marginLeft: "10px",
+              }}
+            >
+              Register kill
+            </Button>
           </div>
         </Modal>
       ) : null}

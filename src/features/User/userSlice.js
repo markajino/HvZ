@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   username: "george",
   role: "admin",
-  faction: "zombie",
-  isJoinedSquad: false,
+  faction: "human",
+  isJoinedSquad: true,
   squadName: "ultraviolet",
   isLoggedIn: true,
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import env from "react-dotenv";
 
 function Map({ width, height, lat, lng }) {
   const containerStyle = {
@@ -10,7 +11,7 @@ function Map({ width, height, lat, lng }) {
   };
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyBEEMbebzbqITDL8CS0brSsp1-fJn0gMdg",
+    googleMapsApiKey: env.GOOGLE_MAP_KEY,
   });
 
   const center = {
@@ -31,7 +32,7 @@ function Map({ width, height, lat, lng }) {
     disableDefaultUI: true, // disable all default UI controls
     zoomControl: true, // enable zoom control
     gestureHandling: "cooperative", // enable touch gestures
-    mapId: '9eec87d694dcdb5',
+    mapId: "9eec87d694dcdb5",
   };
 
   return isLoaded ? (

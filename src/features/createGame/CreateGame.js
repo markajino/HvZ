@@ -8,7 +8,8 @@ import {
 import "./CreateGame.css";
 import Navbar from "../navbar/Navbar";
 import { Space, Input, InputNumber, Button } from "antd";
-import { Link } from "react-router-dom";
+
+import env from "react-dotenv";
 
 const containerStyle = {
   width: "90vw",
@@ -18,18 +19,18 @@ const containerStyle = {
 };
 
 const options = {
-  mapId: '9eec87d694dcdb5',
+  mapId: "9eec87d694dcdb5",
   mapTypeControl: false,
   fullscreenControl: false,
   streetViewControl: false,
 };
 
-function Map() {
+function CreateGame() {
   const center = { lat: 37.9838, lng: 23.7275 };
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyB8dBBA9mcPJriXnA7oxXXomShBRU6tVqM",
+    googleMapsApiKey: env.GOOGLE_MAP_KEY,
   });
 
   const [map, setMap] = React.useState(null);
@@ -38,12 +39,12 @@ function Map() {
   const [clicked, setClicked] = useState(false);
   const [radius, setRadius] = useState(2000);
 
-  // const onLoad = React.useCallback(function callback(map) {
-  //   const bounds = new window.google.maps.LatLngBounds(center);
-  //   map.fitBounds(bounds);
+  const onLoad = React.useCallback(function callback(map) {
+    // const bounds = new window.google.maps.LatLngBounds(center);
+    // map.fitBounds(bounds);
 
-  //   setMap(map);
-  // }, []);
+    setMap(map);
+  }, []);
 
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null);
@@ -69,12 +70,9 @@ function Map() {
               center={centerPoint}
               zoom={9}
               onClick={handleMapClick}
-              // onLoad={onLoad}
-              onUnmount={onUnmount}
               options={options}
             >
               <div>
-                <Marker position={centerPoint} />
                 <Circle
                   center={centerPoint}
                   radius={radius}
@@ -88,11 +86,12 @@ function Map() {
                     draggable: false,
                     editable: false,
                     visible: true,
-                    //radius: 30000,
+
                     radius: radius,
                     zIndex: 1,
                   }}
                 />
+                <Marker position={centerPoint} />
               </div>
             </GoogleMap>
           </div>
@@ -139,4 +138,4 @@ function Map() {
   );
 }
 
-export default React.memo(Map);
+export default React.memo(CreateGame);

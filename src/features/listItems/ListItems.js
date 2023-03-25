@@ -141,6 +141,7 @@ const ListItems = () => {
       <Modal
         title="Delete Player"
         visible={openPlayerDeleteModal}
+        onCancel={() => setOpenPlayerDeleteModal(false)}
         footer={null}
       >
         <p>Are you sure you want to delete this player?</p>
