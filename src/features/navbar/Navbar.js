@@ -2,9 +2,9 @@ import React from "react";
 import { connect, useSelector } from "react-redux";
 import { Button, Tooltip } from "antd";
 import { QuestionOutlined } from "@ant-design/icons";
-
 import "./Navbar.css";
 import userSlice from "../User/userSlice";
+import { Link } from "react-router-dom";
 
 export const Navbar = (props) => {
   const user = useSelector((state) => state.user);
@@ -12,7 +12,9 @@ export const Navbar = (props) => {
     <div>
       <div className="navbar-container">
         {/* <img /> */}
-        <p className="navbar-heading">Humans vs Zombies</p>
+        <Link to="/" >
+          <p className="navbar-heading">Humans vs Zombies</p>
+        </Link>
         {user.loggedIn ? (
           <div className="button-space">
             <Button

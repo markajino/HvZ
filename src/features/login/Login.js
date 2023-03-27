@@ -3,8 +3,19 @@ import { connect } from "react-redux";
 import { Button, Input } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import "./Login.css";
+import keycloak from "../keycloack";
 
 export const Login = (props) => {
+	const handleLogin = () => {
+		keycloak
+			.login({ redirectUri: window.location.origin })
+			.then((authenticated) => {
+				console.log("Authenticated:", authenticated);
+			})
+			.catch((error) => {
+				console.error("Login Error:", error);
+			});
+	};
 	return (
 		<div className="auth-container">
 			<div className="auth-box">
@@ -21,7 +32,7 @@ export const Login = (props) => {
 					placeholder=" ********"
 					style={{ width: "280px ", height: "50px" }}
 				/>
-				<Button size="large" style={{ width: "80px ", height: "40px" }}>
+				<Button size="large" style={{ width: "80px ", height: "40px" }} onClick={handleLogin}>
 					Login
 				</Button>
 			</div>
