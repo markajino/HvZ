@@ -1,11 +1,10 @@
 import { Table, Button, Modal, Space } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Link, Navigate, redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Map from "../Map";
 import "./GameTable.css";
-import { fetchAllGames, deleteGame } from "./gameTableAPI";
 
 export const GameTable = (props) => {
   const user = useSelector((state) => state.user);
@@ -13,9 +12,6 @@ export const GameTable = (props) => {
 
   const [openjoinGameModal, setOpenjoinGameModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [tableData, setTableData] = useState([]);
-  const [deleteGameId, setDeleteGameId] = useState(null);
-
   const columns = [
     {
       title: "Name",
@@ -45,11 +41,11 @@ export const GameTable = (props) => {
       dataIndex: "players",
       sorter: (a, b) => a.players - b.players,
     },
-    // {
-    //   title: "Created at",
-    //   dataIndex: "created_at",
-    //   sorter: (a, b) => a.created_at - b.created_at,
-    // },
+    {
+      title: "Created at",
+      dataIndex: "created_at",
+      sorter: (a, b) => a.created_at - b.created_at,
+    },
   ];
   Role === "admin" &&
     columns.push({
@@ -59,7 +55,7 @@ export const GameTable = (props) => {
         <div>
           <Space>
             <Button type="primary" danger>
-              <Link to={`/game/${record.game_id}`}>View</Link>
+              <Link to={`/game/`}>View</Link>
             </Button>
 
             <Button
@@ -67,7 +63,6 @@ export const GameTable = (props) => {
               danger
               onClick={(e) => {
                 e.stopPropagation();
-                setDeleteGameId(record.game_id);
                 setOpenDeleteModal(true);
               }}
             >
@@ -77,44 +72,38 @@ export const GameTable = (props) => {
         </div>
       ),
     });
-  useEffect(() => {
-    fetchAllGames().then((res) => {
-      setTableData(res.data);
-    });
-  }, []);
 
-  console.log(tableData);
   const data = [
     {
-      game_id: "1", //this is the game id we will get from the database
+      key: "1", //this is the game id we will get from the database
       name: "John Brown",
       state: "Register",
       players: "4/5",
       created_at: "10/3/23 10:30 am",
     },
     {
-      key: "2", //this is the game id we will get from the database
+      key: "1", //this is the game id we will get from the database
       name: "John Brown",
       state: "Register",
       players: "4/5",
       created_at: "10/3/23 10:30 am",
     },
     {
-      key: "3", //this is the game id we will get from the database
+      key: "1", //this is the game id we will get from the database
       name: "John Brown",
       state: "In progress",
       players: "4/5",
       created_at: "10/3/23 10:30 am",
     },
     {
-      key: "3", //this is the game id we will get from the database
+      key: "1", //this is the game id we will get from the database
       name: "John Brown",
       state: "Register",
       players: "4/5",
       created_at: "10/3/23 10:30 am",
     },
     {
-      key: "5", //this is the game id we will get from the database
+      key: "1", //this is the game id we will get from the database
       name: "John Brown",
       state: "Register",
       players: "4/5",
@@ -135,9 +124,8 @@ export const GameTable = (props) => {
       <div className="game-table-container">
         <Table
           columns={columns}
-          dataSource={tableData}
+          dataSource={data}
           onChange={onChange}
-          pagination={false}
           onRow={(record, rowIndex) => {
             return {
               onClick: (event) => {
@@ -173,14 +161,8 @@ export const GameTable = (props) => {
         <h1>Delete game</h1>
         <p>Are you sure you want to delete this game?</p>
 
-        <Button
-          onClick={() => {
-            deleteGame(deleteGameId).then(setOpenDeleteModal(false));
-          }}
-          type="primary"
-          danger
-        >
-          Delete
+        <Button type="primary" danger>
+          <Link to={`/game/`}>Delete</Link>
         </Button>
       </Modal>
     </div>
