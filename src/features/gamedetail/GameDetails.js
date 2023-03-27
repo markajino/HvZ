@@ -13,6 +13,9 @@ import Input from "antd/es/input/Input";
 import TextArea from "antd/es/input/TextArea";
 
 function GameDetails() {
+  // const gameState = "REGISTRATION";
+  const gameState = "IN_PROGRESS";
+  // const gameState = "COMPLETED";
   const user = useSelector((state) => state.user);
   const faction = user.faction;
   const Role = user.role || "";
@@ -91,7 +94,15 @@ function GameDetails() {
     <div>
       <Navbar />
       <p className="game-title">Game name</p>
-
+      <p
+        style={{
+          textAlign: "center",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+        }}
+      >
+        Hello this is very nice game and a description of the game
+      </p>
       <div className="game-btn-container">
         {Role !== "admin" && (
           <div>
@@ -106,11 +117,29 @@ function GameDetails() {
             </Button>
           </div>
         )}
-        {Role === "admin" && (
+        {Role === "admin" && gameState === "REGISTRATION" && (
           <div>
             <Button type="primary" danger>
               Start Game
             </Button>
+            <Button danger onClick={() => setOpenEditGame(true)}>
+              Edit Game
+            </Button>
+          </div>
+        )}
+        {Role === "admin" && gameState === "IN_PROGRESS" && (
+          <div>
+            <Button type="primary" danger>
+              Complete Game
+            </Button>
+            <Button danger onClick={() => setOpenEditGame(true)}>
+              Edit Game
+            </Button>
+          </div>
+        )}
+        {Role === "admin" && gameState === "COMPLETED" && (
+          <div>
+            <p>Game completed</p>
             <Button danger onClick={() => setOpenEditGame(true)}>
               Edit Game
             </Button>

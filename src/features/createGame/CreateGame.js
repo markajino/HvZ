@@ -36,7 +36,7 @@ function CreateGame() {
   const [map, setMap] = React.useState(null);
 
   const [centerPoint, setCenterPoint] = useState(center);
-  const [clicked, setClicked] = useState(false);
+  const [isRefreshingMap, setIsRefreshingMap] = useState(false);
   const [radius, setRadius] = useState(2000);
 
   const onLoad = React.useCallback(function callback(map) {
@@ -51,13 +51,19 @@ function CreateGame() {
   }, []);
 
   const handleMapClick = (e) => {
+    refreshMap();
     setCenterPoint({ lat: e.latLng.lat(), lng: e.latLng.lng() });
   };
 
   const handleRadiusChange = (e) => {
     setRadius(parseInt(e.target.value));
   };
-
+  const refreshMap = async () => {
+    setIsRefreshingMap(true);
+    setTimeout(() => {
+      setIsRefreshingMap(false);
+    }, 100);
+  };
   return (
     <div>
       <Navbar />
@@ -65,35 +71,38 @@ function CreateGame() {
       {isLoaded ? (
         <div>
           <div>
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={centerPoint}
-              zoom={9}
-              onClick={handleMapClick}
-              options={options}
-            >
-              <div>
-                <Circle
-                  center={centerPoint}
-                  radius={radius}
-                  options={{
-                    strokeColor: "#FF0000",
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: "#FF0000",
-                    fillOpacity: 0.35,
-                    clickable: false,
-                    draggable: false,
-                    editable: false,
-                    visible: true,
+            {!isRefreshingMap && (
+              <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={centerPoint}
+                zoom={9}
+                onClick={handleMapClick}
+                options={options}
+              // onDragEnd={(event) => console.log(event.latLng.toString())}
+              >
+                <div>
+                  <Circle
+                    center={centerPoint}
+                    radius={radius}
+                    options={{
+                      strokeColor: "#FF0000",
+                      strokeOpacity: 0.8,
+                      strokeWeight: 2,
+                      fillColor: "#FF0000",
+                      fillOpacity: 0.35,
+                      clickable: false,
+                      draggable: false,
+                      editable: false,
+                      visible: true,
 
-                    radius: radius,
-                    zIndex: 1,
-                  }}
-                />
-                <Marker position={centerPoint} />
-              </div>
-            </GoogleMap>
+                      radius: radius,
+                      zIndex: 1,
+                    }}
+                  />
+                  <Marker position={centerPoint} />
+                </div>
+              </GoogleMap>
+            )}
           </div>
         </div>
       ) : null}
@@ -112,7 +121,7 @@ function CreateGame() {
             value={radius}
             style={{ color: "red" }}
             onChange={handleRadiusChange}
-            // onChange={(e) => handleRadiusChange(e.target.value)}
+          // onChange={(e) => handleRadiusChange(e.target.value)}
           />
           <div>{radius} meters</div>
         </div>

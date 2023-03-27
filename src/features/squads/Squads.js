@@ -18,23 +18,24 @@ function Squads({
   const data = [
     {
       name: "squad 1",
-      members: 5,
-      deceased: 2,
+      active_members: 5,
+      deceased_members: 2,
       deceased: true,
     },
     {
       name: "squad 1",
-      members: 5,
-      deceased: 2,
+      active_members: 5,
+      deceased_members: 2,
       deceased: false,
     },
     {
       name: "squad 1",
-      members: 5,
-      deceased: 2,
+      active_members: 5,
+      deceased_members: 2,
       deceased: true,
     },
   ];
+
   return (
     <div className="squads-tab-box">
       <div className="squads-box-details">
@@ -57,9 +58,11 @@ function Squads({
                 <p className="squad-join-title">{squad.name}</p>
                 <div>
                   <p style={{ margin: 0 }} className="squad-join-members">
-                    members: {squad.members}
+                    Active Members: {squad.active_members}
                   </p>
-                  <p style={{ marginTop: 0 }}>deceased: {squad.deceased}</p>
+                  <p style={{ marginTop: 0 }}>
+                    Deceased Members: {squad.deceased_members}
+                  </p>
                 </div>
                 <Button
                   type="primary"
@@ -101,10 +104,9 @@ function Squads({
                     justifyContent: "space-between",
                     width: "100%",
                   }}
-                  className={item.deceased ? "deceased" : null}
+                  // className={item.deceased ? "deceased" : null}
                 >
                   <p>{item.name}</p>
-                  {item.deceased ? <p> {"Deceased"}</p> : null}
                 </div>
               </List.Item>
             )}
@@ -155,10 +157,8 @@ function Squads({
                     justifyContent: "space-between",
                     width: "100%",
                   }}
-                  className={item.deceased ? "deceased" : null}
                 >
                   <p>{item.name}</p>
-                  {item.deceased ? <p> {"Deceased"}</p> : null}
                 </div>
               </List.Item>
             )}
