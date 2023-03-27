@@ -11,7 +11,7 @@ function Map({ width, height, lat, lng }) {
   };
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: env.GOOGLE_MAP_KEY,
+    googleMapsApiKey: "AIzaSyBEEMbebzbqITDL8CS0brSsp1-fJn0gMdg",
   });
 
   const center = {

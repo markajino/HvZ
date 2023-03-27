@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -30,7 +30,7 @@ function CreateGame() {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: env.GOOGLE_MAP_KEY,
+    googleMapsApiKey: "AIzaSyBEEMbebzbqITDL8CS0brSsp1-fJn0gMdg",
   });
 
   const [map, setMap] = React.useState(null);
@@ -58,6 +58,29 @@ function CreateGame() {
     setRadius(parseInt(e.target.value));
   };
 
+  useEffect(() => {
+    setClicked(
+      <Circle
+        center={centerPoint}
+        radius={radius}
+        options={{
+          strokeColor: "#FF0000",
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: "#FF0000",
+          fillOpacity: 0.35,
+          clickable: false,
+          draggable: false,
+          editable: false,
+          visible: true,
+
+          radius: radius,
+          zIndex: 1,
+        }}
+      />
+    );
+  }, [centerPoint]);
+
   return (
     <div>
       <Navbar />
@@ -73,7 +96,7 @@ function CreateGame() {
               options={options}
             >
               <div>
-                <Circle
+                {/* <Circle
                   center={centerPoint}
                   radius={radius}
                   options={{
@@ -90,7 +113,8 @@ function CreateGame() {
                     radius: radius,
                     zIndex: 1,
                   }}
-                />
+                /> */}
+                {clicked}
                 <Marker position={centerPoint} />
               </div>
             </GoogleMap>
@@ -108,7 +132,7 @@ function CreateGame() {
           <input
             type="range"
             min="100"
-            max="10000"
+            max="1000"
             value={radius}
             style={{ color: "red" }}
             onChange={handleRadiusChange}
@@ -122,18 +146,21 @@ function CreateGame() {
             <p style={{ width: "110px" }}>Game Title:</p>
             <Input placeholder="game title" required />
           </div>
+          <div className="create-game-detail">
+            <p style={{ width: "110px" }}>Game Description:</p>
+            <Input.TextArea placeholder="game description" required />
+          </div>
           <label>
             Player Limit: <InputNumber required defaultValue={3} min={2} />
           </label>
         </Space>
       </div>
-      {/* 
+
       <div className="create-game-button">
-        <Button danger type="primary">
-          <Link to={"/"}>Create</Link>
-        </Button>
+        <button className="create-btn" type="primary">
+          Create
+        </button>
       </div>
-        */}
     </div>
   );
 }

@@ -33,3 +33,14 @@ input[type="range"] {
   margin: 20px;
   margin-right: 10%;
 }
+
+.create-btn {
+  background-color: #e42f2f;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  width: 90px;
+  height: 30px;
+  font-size: 16px;
+  font-weight: 400;
+}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Tabs, Modal, List, Button, Space } from "antd";
+import { Tabs, Modal, List, Button, Space, Select } from "antd";
 import { DeleteOutlined, InfoCircleOutlined } from "@ant-design/icons";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -124,6 +124,7 @@ const ListItems = () => {
         visible={openPlayerModal}
         onOk={() => setOpenPlayerModal(false)}
         onCancel={() => setOpenPlayerModal(false)}
+        footer={null}
       >
         <p>Player Name: John</p>
         {faction !== "zombie" ? (
@@ -135,6 +136,15 @@ const ListItems = () => {
           <div>
             <p>Player Faction: Human</p>
             <p>Bite Code: FGR##$</p>
+            <Select
+              defaultValue={faction}
+              style={{ width: 120 }}
+              // onChange={handleChange} api calls to update the player
+              options={[
+                { value: "human", label: "Human" },
+                { value: "zombie", label: "Zombie" },
+              ]}
+            />
           </div>
         )}
       </Modal>
