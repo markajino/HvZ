@@ -6,7 +6,9 @@
 .create-game-detail {
   display: flex;
   justify-content: space-around;
+  margin-top: -25px;
 }
+
 input[type="range"] {
   accent-color: #e42f2f;
 }
@@ -17,8 +19,7 @@ input[type="range"] {
   align-items: center;
 }
 
-.create-game-detail {
-}
+.create-game-detail {}
 
 .game-details {
   display: flex;
@@ -27,11 +28,14 @@ input[type="range"] {
   width: 300px;
   height: 30px;
 }
+
 .create-game-button {
   display: flex;
   justify-content: center;
   margin: 20px;
   margin-right: 10%;
+  z-index: 1;
+  /* add a higher z-index to bring the button to the front */
 }
 
 .create-btn {
@@ -39,8 +43,14 @@ input[type="range"] {
   border: none;
   color: white;
   border-radius: 10px;
-  width: 90px;
-  height: 30px;
+  width: 100px;
+  height: 40px;
+  /* increase the height of the button for better visibility */
   font-size: 16px;
   font-weight: 400;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+  position: relative;
+  /* add a position property to allow for adjusting top/bottom values */
+  top: -20px;
+  /* adjust the top value to move the button up or down as needed */
 }

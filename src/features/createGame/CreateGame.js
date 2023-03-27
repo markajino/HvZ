@@ -126,23 +126,26 @@ function CreateGame() {
           <div>{radius} meters</div>
         </div>
         <Space direction="vertical" size={"large"} className="game-details">
-          <p style={{ fontSize: "20px" }}>Game Details</p>
+          <p style={{ fontSize: "20px", marginBottom: "10px" }}>Game Details</p>
           <div className="create-game-detail">
-            <p style={{ width: "110px" }}>Game Title:</p>
+            <p style={{ width: "110px", marginBottom: 0, margintop:"5px"}}>Game Title:</p>
             <Input placeholder="game title" required />
           </div>
-          <label>
-            Player Limit: <InputNumber required defaultValue={3} min={2} />
-          </label>
+          <div className="create-game-detail" style={{ marginBottom: "5px",paddingTop:"20px" }}>
+            <p style={{ width: "110px", marginBottom: 0 }}>Game Description:</p>
+            <textarea placeholder="Game Description" required></textarea>
+          </div>
+          <div className="create-game-detail" style={{ marginTop: "-10px" }}>
+            <p style={{ width: "110px", marginBottom: 0 }}>Player Limit:</p>
+            <InputNumber required defaultValue={3} min={2} style={{ width: "100px" }} />
+          </div>
         </Space>
+
+
       </div>
-      {/* 
-      <div className="create-game-button">
-        <Button danger type="primary">
-          <Link to={"/"}>Create</Link>
-        </Button>
+      <div class="create-game-button">
+        <button class="create-btn" type="button">Create</button>
       </div>
-        */}
     </div>
   );
 }
