@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -30,13 +30,13 @@ function CreateGame() {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyBEEMbebzbqITDL8CS0brSsp1-fJn0gMdg",
+    googleMapsApiKey: env.GOOGLE_MAP_KEY,
   });
 
   const [map, setMap] = React.useState(null);
 
   const [centerPoint, setCenterPoint] = useState(center);
-  const [clicked, setClicked] = useState(false);
+  const [isRefreshingMap, setIsRefreshingMap] = useState(false);
   const [radius, setRadius] = useState(2000);
 
   const onLoad = React.useCallback(function callback(map) {
@@ -51,36 +51,19 @@ function CreateGame() {
   }, []);
 
   const handleMapClick = (e) => {
+    refreshMap();
     setCenterPoint({ lat: e.latLng.lat(), lng: e.latLng.lng() });
   };
 
   const handleRadiusChange = (e) => {
     setRadius(parseInt(e.target.value));
   };
-
-  useEffect(() => {
-    setClicked(
-      <Circle
-        center={centerPoint}
-        radius={radius}
-        options={{
-          strokeColor: "#FF0000",
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: "#FF0000",
-          fillOpacity: 0.35,
-          clickable: false,
-          draggable: false,
-          editable: false,
-          visible: true,
-
-          radius: radius,
-          zIndex: 1,
-        }}
-      />
-    );
-  }, [centerPoint]);
-
+  const refreshMap = async () => {
+    setIsRefreshingMap(true);
+    setTimeout(() => {
+      setIsRefreshingMap(false);
+    }, 100);
+  };
   return (
     <div>
       <Navbar />
@@ -88,36 +71,38 @@ function CreateGame() {
       {isLoaded ? (
         <div>
           <div>
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={centerPoint}
-              zoom={9}
-              onClick={handleMapClick}
-              options={options}
-            >
-              <div>
-                {/* <Circle
-                  center={centerPoint}
-                  radius={radius}
-                  options={{
-                    strokeColor: "#FF0000",
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: "#FF0000",
-                    fillOpacity: 0.35,
-                    clickable: false,
-                    draggable: false,
-                    editable: false,
-                    visible: true,
+            {!isRefreshingMap && (
+              <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={centerPoint}
+                zoom={9}
+                onClick={handleMapClick}
+                options={options}
+                // onDragEnd={(event) => console.log(event.latLng.toString())}
+              >
+                <div>
+                  <Circle
+                    center={centerPoint}
+                    radius={radius}
+                    options={{
+                      strokeColor: "#FF0000",
+                      strokeOpacity: 0.8,
+                      strokeWeight: 2,
+                      fillColor: "#FF0000",
+                      fillOpacity: 0.35,
+                      clickable: false,
+                      draggable: false,
+                      editable: false,
+                      visible: true,
 
-                    radius: radius,
-                    zIndex: 1,
-                  }}
-                /> */}
-                {clicked}
-                <Marker position={centerPoint} />
-              </div>
-            </GoogleMap>
+                      radius: radius,
+                      zIndex: 1,
+                    }}
+                  />
+                  <Marker position={centerPoint} />
+                </div>
+              </GoogleMap>
+            )}
           </div>
         </div>
       ) : null}
@@ -132,7 +117,7 @@ function CreateGame() {
           <input
             type="range"
             min="100"
-            max="1000"
+            max="10000"
             value={radius}
             style={{ color: "red" }}
             onChange={handleRadiusChange}
@@ -146,21 +131,18 @@ function CreateGame() {
             <p style={{ width: "110px" }}>Game Title:</p>
             <Input placeholder="game title" required />
           </div>
-          <div className="create-game-detail">
-            <p style={{ width: "110px" }}>Game Description:</p>
-            <Input.TextArea placeholder="game description" required />
-          </div>
           <label>
             Player Limit: <InputNumber required defaultValue={3} min={2} />
           </label>
         </Space>
       </div>
-
+      {/* 
       <div className="create-game-button">
-        <button className="create-btn" type="primary">
-          Create
-        </button>
+        <Button danger type="primary">
+          <Link to={"/"}>Create</Link>
+        </Button>
       </div>
+        */}
     </div>
   );
 }
