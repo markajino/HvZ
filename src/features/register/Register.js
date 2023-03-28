@@ -1,16 +1,11 @@
-import React,{ useEffect } from "react";
+import React from "react";
 import { Button, Input } from "antd";
 import { LockOutlined, UserOutlined, MailOutlined, BorderRightOutlined, BorderLeftOutlined } from "@ant-design/icons";
 import "./Register.css";
-import keycloak from "../keycloack";
+
 
 
 export const Register = (props) => {
-    useEffect(() => {
-        keycloak.init({ onLoad: 'login-required' }).then((authenticated) => {
-            console.log('Authenticated:', authenticated);
-        });
-    }, []);
     return (
         <div className="auth-container">
             <div className="auth-box-reg">
