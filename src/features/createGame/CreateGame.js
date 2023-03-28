@@ -56,6 +56,7 @@ function CreateGame() {
   };
 
   const handleRadiusChange = (e) => {
+    refreshMap();
     setRadius(parseInt(e.target.value));
   };
   const refreshMap = async () => {
