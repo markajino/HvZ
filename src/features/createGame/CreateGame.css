@@ -19,7 +19,8 @@ input[type="range"] {
   align-items: center;
 }
 
-.create-game-detail {}
+.create-game-detail {
+}
 
 .game-details {
   display: flex;
@@ -53,4 +54,15 @@ input[type="range"] {
   /* add a position property to allow for adjusting top/bottom values */
   top: -20px;
   /* adjust the top value to move the button up or down as needed */
+}
+
+.create-btn:disabled {
+  background-color: #e42f2f;
+  opacity: 0.5;
+}
+
+.create-btn:active {
+  background-color: #b32424;
+  box-shadow: 0 0 5px #666;
+  transform: translateY(2px);
 }

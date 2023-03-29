@@ -6,7 +6,7 @@ const initialState = {
   faction: "zombie",
   isJoinedSquad: true,
   squadName: "ultraviolet",
-  isLoggedIn: true,
+  isLoggedIn: false,
 };
 
 export const userSlice = createSlice({

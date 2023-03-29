@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Tabs, Modal, List, Button, Space, Select } from "antd";
 import { DeleteOutlined, InfoCircleOutlined } from "@ant-design/icons";
@@ -6,8 +6,10 @@ import { DeleteOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 
 import "../gamedetail/GameDetails.css";
+import keycloak from "../../keycloak";
+import { deletePlayer, GetAllPlayers, updatePlayer } from "../../API/API";
 
-const ListItems = () => {
+const ListItems = ({ gameId }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
@@ -39,10 +41,21 @@ const ListItems = () => {
       faction: "zombie",
     },
   ];
-
   const [players, setPlayers] = useState(data);
   const [openPlayerModal, setOpenPlayerModal] = useState(false);
+  const [playersInList, setPlayersInList] = useState(players);
   const [openPlayerDeleteModal, setOpenPlayerDeleteModal] = useState(false);
+  const [playerToDelete, setPlayerToDelete] = useState(null);
+  const [playerToView, setPlayerToView] = useState(null);
+  const [refresh, setRefresh] = useState(false);
+
+  useEffect(() => {
+    GetAllPlayers(gameId).then((res) => {
+      console.log("Players", res);
+      setPlayers(res.data);
+      setPlayersInList(res.data);
+    });
+  }, [gameId, refresh]);
   return (
     <div class="list-tab-box">
       <div className="list-container">
@@ -53,7 +66,7 @@ const ListItems = () => {
                 <Button
                   danger
                   onClick={() => {
-                    setPlayers(data);
+                    setPlayersInList(players);
                   }}
                 >
                   All
@@ -61,9 +74,7 @@ const ListItems = () => {
                 <Button
                   danger
                   onClick={() => {
-                    setPlayers(
-                      data.filter((player) => player.faction === "human")
-                    );
+                    setPlayersInList(players.filter((player) => player.human));
                   }}
                 >
                   Humans
@@ -71,9 +82,7 @@ const ListItems = () => {
                 <Button
                   danger
                   onClick={() => {
-                    setPlayers(
-                      data.filter((player) => player.faction === "zombie")
-                    );
+                    setPlayersInList(players.filter((player) => !player.human));
                   }}
                 >
                   Zombies
@@ -82,7 +91,7 @@ const ListItems = () => {
             </div>
           }
           bordered
-          dataSource={players}
+          dataSource={playersInList}
           renderItem={(item) => (
             <List.Item>
               <div
@@ -92,22 +101,28 @@ const ListItems = () => {
                   width: "100%",
                 }}
               >
-                <p>{item.name}</p>
+                <p>{item?.full_name}</p>
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
                   }}
                 >
-                  {Role === "admin" ? (
+                  {keycloak.hasRealmRole("ADMIN") ? (
                     <Space>
                       <InfoCircleOutlined
                         style={{ fontSize: "20px" }}
-                        onClick={() => setOpenPlayerModal(true)}
+                        onClick={() => {
+                          setOpenPlayerModal(true);
+                          setPlayerToView(item);
+                        }}
                       />
                       <DeleteOutlined
                         style={{ fontSize: "25px" }}
-                        onClick={() => setOpenPlayerDeleteModal(true)}
+                        onClick={() => {
+                          setOpenPlayerDeleteModal(true);
+                          setPlayerToDelete(item);
+                        }}
                       />
                     </Space>
                   ) : null}
@@ -126,25 +141,50 @@ const ListItems = () => {
         onCancel={() => setOpenPlayerModal(false)}
         footer={null}
       >
-        <p>Player Name: John</p>
-        {faction !== "zombie" ? (
+        <p>Player Name: {playerToView?.full_name}</p>
+        {!playerToView?.human ? (
           <div>
             <p>Player Faction: Zombie</p>
-            <p>Is zero patient: no</p>
+            <p>Is zero patient: {playerToView?.patient_zero ? "yes" : "no"}</p>
+            {keycloak.hasRealmRole("ADMIN") && (
+              <Button
+                type="primary"
+                danger
+                onClick={() => {
+                  updatePlayer(gameId, playerToView.player_id).then((res) => {
+                    setPlayers(
+                      players.filter(
+                        (player) => player.player_id !== playerToView.player_id
+                      )
+                    );
+                    setRefresh(!refresh);
+
+                    setOpenPlayerModal(false);
+                  });
+                }}
+              >
+                toggle player faction
+              </Button>
+            )}
           </div>
         ) : (
           <div>
             <p>Player Faction: Human</p>
-            <p>Bite Code: FGR##$</p>
-            <Select
-              defaultValue={faction}
-              style={{ width: 120 }}
-              // onChange={handleChange} api calls to update the player
-              options={[
-                { value: "human", label: "Human" },
-                { value: "zombie", label: "Zombie" },
-              ]}
-            />
+            <p>Bite Code: {playerToView?.biteCode}</p>
+            {keycloak.hasRealmRole("ADMIN") && (
+              <Button
+                type="primary"
+                danger
+                onClick={() => {
+                  updatePlayer(gameId, playerToView.player_id).then((res) => {
+                    setRefresh(!refresh);
+                    setOpenPlayerModal(false);
+                  });
+                }}
+              >
+                toggle player faction
+              </Button>
+            )}
           </div>
         )}
       </Modal>
@@ -161,7 +201,17 @@ const ListItems = () => {
         <Button
           type="primary"
           danger
-          onClick={() => setOpenPlayerDeleteModal(false)}
+          onClick={() => {
+            deletePlayer(gameId, playerToDelete.player_id).then((res) => {
+              console.log("Delete Player", res);
+              setPlayers(
+                players.filter(
+                  (player) => player.player_id !== playerToDelete.player_id
+                )
+              );
+              setOpenPlayerDeleteModal(false);
+            });
+          }}
           style={{ marginLeft: "10px" }}
         >
           Delete

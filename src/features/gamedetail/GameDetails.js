@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../navbar/Navbar";
 import { Tabs, Modal, List, Button, Space } from "antd";
 import { DeleteOutlined, InfoCircleOutlined } from "@ant-design/icons";
@@ -11,6 +11,9 @@ import Map from "../Map";
 import "./GameDetails.css";
 import Input from "antd/es/input/Input";
 import TextArea from "antd/es/input/TextArea";
+import keycloak from "../../keycloak";
+import { useParams } from "react-router-dom";
+import { getGame, updateGame } from "../../API/API";
 
 function GameDetails() {
   // const gameState = "REGISTRATION";
@@ -18,17 +21,27 @@ function GameDetails() {
   // const gameState = "COMPLETED";
   const user = useSelector((state) => state.user);
   const faction = user.faction;
-  const Role = user.role || "";
-  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
-    useGeolocated({
-      positionOptions: {
-        enableHighAccuracy: false,
-      },
-      userDecisionTimeout: 5000,
-    });
   const [open, setOpen] = useState(false);
   const [openInfo, setOpenInfo] = useState(false);
   const [openEditGame, setOpenEditGame] = useState(false);
+  const [circleRadius, setCircleRadius] = useState(1000);
+  const [circleCenter, setCircleCenter] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const [gameData, setGameData] = useState({});
+  const [gameRefresher, setGameRefresher] = useState(false);
+  const [editGameTitle, setEditGameTitle] = useState("");
+  const [editGameState, setEditGameState] = useState("");
+
+  let { gameId } = useParams();
+  useEffect(() => {
+    getGame(gameId).then((res) => {
+      setGameData(res.data);
+      setEditGameTitle(res.name);
+      setEditGameState(res.state);
+    });
+  }, [gameRefresher]);
 
   const [openSquadModal, setOpenSquadModal] = useState(false);
   const [openJoinSquadModal, setOpenJoinSquadModal] = useState(false);
@@ -71,7 +84,7 @@ function GameDetails() {
     {
       key: "2",
       label: `Player List`,
-      children: <ListItems />,
+      children: <ListItems gameId={gameData.game_id} />,
     },
     {
       key: "3",
@@ -85,15 +98,73 @@ function GameDetails() {
           showJoinSquadModal={showJoinSquadModal}
           hideJoinSquadModal={hideJoinSquadModal}
           openJoinSquadModal={openJoinSquadModal}
+          gameId={gameId}
         />
       ),
     },
   ];
+  /////////// Random point in circle ///////
+  function random_point_in_disk(max_radius) {
+    var r = Math.sqrt(Math.random()) * max_radius;
+    var theta = Math.random() * 2 * Math.PI;
+    return [r * Math.cos(theta), r * Math.sin(theta)];
+  }
+
+  const randomPoint = random_point_in_disk(circleRadius);
+
+  const x = randomPoint[0];
+  const y = randomPoint[1];
+  const latitude = circleCenter.lat + y / 111111; // 1 degree of latitude is approximately 111111 meters
+  const longitude =
+    circleCenter.lng + x / (111111 * Math.cos(circleCenter.lat));
+
+  /////////
+
+  //// Making circle from random points ////
+  const CircleFinder = (nw_lat, nw_lng, se_lat, se_lng) => {
+    const R = 6371e3; // Earth's radius in meters
+    const lat1 = (nw_lat * Math.PI) / 180;
+    const lat2 = (se_lat * Math.PI) / 180;
+    const lng1 = (nw_lng * Math.PI) / 180;
+    const lng2 = (se_lng * Math.PI) / 180;
+
+    const deltaLat = lat2 - lat1;
+    const deltaLng = lng2 - lng1;
+    const a =
+      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(lat1) *
+        Math.cos(lat2) *
+        Math.sin(deltaLng / 2) *
+        Math.sin(deltaLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+
+    const centerLat = (nw_lat + se_lat) / 2;
+    const centerLng = (nw_lng + se_lng) / 2;
+    const radiuscircle = distance;
+    console.log("radius", radiuscircle);
+    setCircleCenter({
+      lat: centerLat,
+      lng: centerLng,
+    });
+    setCircleRadius(radiuscircle);
+    // setRadius(radius);
+  };
+
+  useEffect(() => {
+    CircleFinder(
+      gameData?.nw_lat,
+      gameData?.nw_lng,
+      gameData?.se_lat,
+      gameData?.se_lng
+    );
+  }, [gameData?.nw_lat]);
+  //////////
 
   return (
     <div>
       <Navbar />
-      <p className="game-title">Game name</p>
+      <p className="game-title">{gameData?.name}</p>
       <p
         style={{
           textAlign: "center",
@@ -101,10 +172,24 @@ function GameDetails() {
           paddingRight: "20px",
         }}
       >
-        Hello this is very nice game and a description of the game
+        {gameData?.description}
+      </p>
+      <p
+        style={{
+          textAlign: "center",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+        }}
+      >
+        Game Status:{" "}
+        {gameData?.state === "REGISTRATION"
+          ? "Registration"
+          : gameData?.state === "IN_PROGRESS"
+          ? "In Progress"
+          : "Completed"}
       </p>
       <div className="game-btn-container">
-        {Role !== "admin" && (
+        {!keycloak.hasRealmRole("ADMIN") && (
           <div>
             <Button type="primary" danger onClick={showModal}>
               Leave Game
@@ -117,38 +202,66 @@ function GameDetails() {
             </Button>
           </div>
         )}
-        {Role === "admin" && gameState === "REGISTRATION" && (
-          <div>
-            <Button type="primary" danger>
-              Start Game
-            </Button>
-            <Button danger onClick={() => setOpenEditGame(true)}>
-              Edit Game
-            </Button>
-          </div>
-        )}
-        {Role === "admin" && gameState === "IN_PROGRESS" && (
-          <div>
-            <Button type="primary" danger>
-              Complete Game
-            </Button>
-            <Button danger onClick={() => setOpenEditGame(true)}>
-              Edit Game
-            </Button>
-          </div>
-        )}
-        {Role === "admin" && gameState === "COMPLETED" && (
-          <div>
-            <p>Game completed</p>
-            <Button danger onClick={() => setOpenEditGame(true)}>
-              Edit Game
-            </Button>
-          </div>
-        )}
+        {keycloak.hasRealmRole("ADMIN") &&
+          gameData?.state === "REGISTRATION" && (
+            <div>
+              <Button
+                type="primary"
+                danger
+                onClick={() => {
+                  updateGame(
+                    gameData.game_id,
+                    {
+                      name: gameData.name,
+                      description: gameData.description,
+                      nw_lat: gameData.nw_lat,
+                      nw_lng: gameData.nw_lng,
+                      se_lat: gameData.se_lat,
+                      se_lng: gameData.se_lng,
+                    },
+                    "IN_PROGRESS"
+                  ).then(setGameRefresher(!gameRefresher));
+                }}
+              >
+                Start Game
+              </Button>
+              {/* <Button danger onClick={() => setOpenEditGame(true)}>
+                Edit Game
+              </Button> */}
+            </div>
+          )}
+        {keycloak.hasRealmRole("ADMIN") &&
+          gameData?.state === "IN_PROGRESS" && (
+            <div>
+              <Button
+                type="primary"
+                danger
+                onClick={() => {
+                  updateGame(
+                    gameData.game_id,
+                    {
+                      name: gameData.name,
+                      description: gameData.description,
+                      nw_lat: gameData.nw_lat,
+                      nw_lng: gameData.nw_lng,
+                      se_lat: gameData.se_lat,
+                      se_lng: gameData.se_lng,
+                    },
+                    "COMPLETED"
+                  ).then(setGameRefresher(!gameRefresher));
+                }}
+              >
+                Complete Game
+              </Button>
+              <Button danger onClick={() => setOpenEditGame(true)}>
+                Edit Game
+              </Button>
+            </div>
+          )}
       </div>
       <div className="main-container">
         <div className="map-box">
-          <Map />
+          <Map center={circleCenter} radius={circleRadius} />
         </div>
         <div className="chat-box">
           <Tabs defaultActiveKey="1" items={items} style={{ color: "black" }} />
@@ -170,16 +283,48 @@ function GameDetails() {
         onOk={hideEditModal}
         onCancel={hideEditModal}
         okText="Done"
+        footer={null}
       >
         <div>
           <label>
             Game Title
-            <Input placeholder="Game title" />
+            <Input
+              placeholder="Game title"
+              value={editGameTitle || gameData.name}
+              onChange={(e) => setEditGameTitle(e.target.value)}
+            />
           </label>
-          <label>
-            Game Status
-            <Input placeholder="Game Status" />
-          </label>
+          {/* <label>
+            Game State
+            <Input
+              placeholder="Game Status"
+              value={editGameState}
+              onChange={(e) => setEditGameState(e.target.value)}
+            />
+          </label> */}
+          <Button
+            style={{ marginTop: "1vw" }}
+            type="primary"
+            danger
+            onClick={() => {
+              updateGame(
+                gameData.game_id,
+                {
+                  name: editGameTitle,
+                  description: gameData.description,
+                  nw_lat: gameData.nw_lat,
+                  nw_lng: gameData.nw_lng,
+                  se_lat: gameData.se_lat,
+                  se_lng: gameData.se_lng,
+                },
+                gameData.state
+              )
+                .then(hideEditModal)
+                .then(setGameRefresher(!gameRefresher));
+            }}
+          >
+            Edit
+          </Button>
         </div>
       </Modal>
       {faction === "human" ? (
@@ -195,8 +340,8 @@ function GameDetails() {
             <p>FREWF$#F</p>
           </div>
           <div>
-            <p>Latitude: {coords?.latitude} </p>
-            <p>Longitude: {coords?.longitude}</p>
+            <p>Latitude: {latitude} </p>
+            <p>Longitude: {longitude}</p>
           </div>
         </Modal>
       ) : faction === "zombie" ? (
@@ -226,7 +371,7 @@ function GameDetails() {
             >
               Latitude:
             </p>
-            <Input placeholder="Enter Latitude" />
+            <Input placeholder="Enter Latitude" defaultValue={latitude} />
             <p
               style={{
                 display: "flex",
@@ -238,7 +383,7 @@ function GameDetails() {
             >
               Longitude:
             </p>
-            <Input placeholder="Enter Longitude" />
+            <Input placeholder="Enter Longitude" defaultValue={longitude} />
           </div>
           <p
             style={{

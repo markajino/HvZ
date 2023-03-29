@@ -3,6 +3,7 @@ import { Button, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "../gamedetail/GameDetails.css";
 import Input from "antd/es/input/Input";
+import keycloak from "../../keycloak";
 
 const ChatTab = () => {
   const user = useSelector((state) => state.user);
@@ -15,10 +16,10 @@ const ChatTab = () => {
         <Space>
           <Button danger>All</Button>
 
-          {faction === "zombie" || Role === "admin" ? (
+          {faction === "zombie" || keycloak.hasRealmRole("ADMIN") ? (
             <Button danger>Zombies</Button>
           ) : null}
-          {faction === "human" || Role === "admin" ? (
+          {faction === "human" || keycloak.hasRealmRole("ADMIN") ? (
             <Button danger>Humans</Button>
           ) : null}
           {isJoinedSquad ? <Button danger>Squads</Button> : null}

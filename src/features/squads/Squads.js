@@ -1,7 +1,9 @@
 import { Button, Input, InputNumber, Space, List, Modal } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../gamedetail/GameDetails.css";
 import { useSelector } from "react-redux";
+import { createSqaud, GetAllSquads } from "../../API/API";
+import keycloak from "../../keycloak";
 
 function Squads({
   hideSquadModal,
@@ -12,8 +14,10 @@ function Squads({
   setOpenJoinSquadModal,
   hideJoinSquadModal,
   showJoinSquadModal,
+  gameId,
 }) {
   const user = useSelector((state) => state.user);
+  const faction = user.faction;
 
   const data = [
     {
@@ -21,37 +25,76 @@ function Squads({
       active_members: 5,
       deceased_members: 2,
       deceased: true,
+      human: false,
     },
     {
       name: "squad 1",
       active_members: 5,
       deceased_members: 2,
       deceased: false,
+      human: false,
     },
     {
       name: "squad 1",
       active_members: 5,
       deceased_members: 2,
       deceased: true,
+      human: true,
     },
   ];
+  const [squadData, setSquadData] = useState(data);
+  const [squadName, setSquadName] = useState("");
+  const [refresher, setRefresher] = useState(false);
+
+  useEffect(() => {
+    if (faction === "human") {
+      setSquadData(data.filter((squad) => squad.human === true));
+    } else if (faction === "zombie") {
+      setSquadData(data.filter((squad) => squad.human === false));
+    }
+  }, [faction]);
+
+  useEffect(() => {
+    GetAllSquads(gameId).then((res) => {
+      console.log("Squads", res);
+      setSquadData(res.data);
+    });
+  }, [gameId, refresher]);
 
   return (
     <div className="squads-tab-box">
-      <div className="squads-box-details">
-        <p className="squads-title">Create Squads</p>
-        <Space direction="vertical">
-          <div className="squads-inputs">
-            <Input placeholder="Name" className="squads-inputfield" />
-            <Button danger>Create</Button>
-          </div>
-        </Space>
-      </div>
+      {!keycloak.hasRealmRole("ADMIN") && (
+        <div className="squads-box-details">
+          <p className="squads-title">Create Squads</p>
+          <Space direction="vertical">
+            <div className="squads-inputs">
+              <Input
+                placeholder="Name"
+                className="squads-inputfield"
+                value={squadName}
+                onChange={(e) => setSquadName(e.target.value)}
+              />
+              <Button
+                danger
+                onClick={() => {
+                  createSqaud(gameId, squadName).then((res) => {
+                    // add a player id Attribute after squadName
+                    console.log("Squad Created", res);
+                    setSquadName("");
+                    setRefresher(!refresher);
+                  });
+                }}
+              >
+                Create
+              </Button>
+            </div>
+          </Space>
+        </div>
+      )}
       <div className="squad-join-container">
         <p className="squads-title">Join Squads</p>
         <List
-          hello
-          dataSource={data}
+          dataSource={squadData}
           renderItem={(squad) => (
             <List.Item>
               <div className="squad-join-box">
@@ -60,16 +103,18 @@ function Squads({
                   <p style={{ margin: 0 }} className="squad-join-members">
                     Active Members: {squad.active_members}
                   </p>
-                  <p style={{ marginTop: 0 }}>
-                    Deceased Members: {squad.deceased_members}
-                  </p>
+                  {faction === "human" && (
+                    <p style={{ marginTop: 0 }}>
+                      Deceased Members: {squad.deceased_members}
+                    </p>
+                  )}
                 </div>
                 <Button
                   type="primary"
                   danger
                   onClick={() => showJoinSquadModal()}
                 >
-                  View
+                  Join
                 </Button>
               </div>
             </List.Item>
@@ -92,7 +137,7 @@ function Squads({
           }}
         >
           <p style={{ textAlign: "center", fontSize: "24px" }}>squad name</p>
-          <List
+          {/* <List
             style={{ maxHeight: "350px", overflow: "scroll" }}
             bordered
             dataSource={data}
@@ -112,7 +157,7 @@ function Squads({
             )}
 
             //style={{ width: "450px" }}
-          />
+          /> */}
 
           <Space
             style={{
@@ -145,7 +190,7 @@ function Squads({
           }}
         >
           <p style={{ textAlign: "center", fontSize: "24px" }}>squad name</p>
-          <List
+          {/* <List
             style={{ maxHeight: "350px", overflow: "scroll" }}
             bordered
             dataSource={data}
@@ -164,7 +209,7 @@ function Squads({
             )}
 
             //style={{ width: "450px" }}
-          />
+          /> */}
 
           <Button
             danger
