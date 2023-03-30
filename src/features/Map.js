@@ -16,7 +16,7 @@ function Map({ width, height, lat, lng, center, radius, killData }) {
   };
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: env.GOOGLE_MAPS_API_KEY,
+    googleMapsApiKey: "AIzaSyBEEMbebzbqITDL8CS0brSsp1-fJn0gMdg",
   });
   const [circleCenter, setCircleCenter] = React.useState({
     lat: lat,
