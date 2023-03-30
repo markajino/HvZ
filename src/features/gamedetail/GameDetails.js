@@ -13,12 +13,15 @@ import Input from "antd/es/input/Input";
 import TextArea from "antd/es/input/TextArea";
 import keycloak from "../../keycloak";
 import { useParams } from "react-router-dom";
-import { getGame, updateGame } from "../../API/API";
+import {
+  createKill,
+  getAllkills,
+  getGame,
+  getUser,
+  updateGame,
+} from "../../API/API";
 
 function GameDetails() {
-  // const gameState = "REGISTRATION";
-  const gameState = "IN_PROGRESS";
-  // const gameState = "COMPLETED";
   const user = useSelector((state) => state.user);
   const faction = user.faction;
   const [open, setOpen] = useState(false);
@@ -33,6 +36,12 @@ function GameDetails() {
   const [gameRefresher, setGameRefresher] = useState(false);
   const [editGameTitle, setEditGameTitle] = useState("");
   const [editGameState, setEditGameState] = useState("");
+  const [userObj, setUserObj] = useState({});
+  const [killData, setKillData] = useState([]);
+  const [killLat, setKillLat] = useState(0);
+  const [killLng, setKillLng] = useState(0);
+  const [killdescription, setKillDescription] = useState("");
+  const [killBiteCode, setKillBiteCode] = useState("");
 
   let { gameId } = useParams();
   useEffect(() => {
@@ -43,6 +52,18 @@ function GameDetails() {
     });
   }, [gameRefresher]);
 
+  useEffect(() => {
+    getUser().then((res) => {
+      setUserObj(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    getAllkills(gameId, userObj.player_id).then((res) => {
+      console.log("Kills", res);
+      setKillData(res.data);
+    });
+  }, [gameRefresher]);
   const [openSquadModal, setOpenSquadModal] = useState(false);
   const [openJoinSquadModal, setOpenJoinSquadModal] = useState(false);
   const showSquadModal = () => {
@@ -79,12 +100,12 @@ function GameDetails() {
     {
       key: "1",
       label: "Chat",
-      children: <ChatTab />,
+      children: <ChatTab gameId={gameData.game_id} userObj={userObj} />,
     },
     {
       key: "2",
       label: `Player List`,
-      children: <ListItems gameId={gameData.game_id} />,
+      children: <ListItems gameId={gameData.game_id} userObj={userObj} />,
     },
     {
       key: "3",
@@ -99,6 +120,7 @@ function GameDetails() {
           hideJoinSquadModal={hideJoinSquadModal}
           openJoinSquadModal={openJoinSquadModal}
           gameId={gameId}
+          userObj={userObj}
         />
       ),
     },
@@ -191,15 +213,15 @@ function GameDetails() {
       <div className="game-btn-container">
         {!keycloak.hasRealmRole("ADMIN") && (
           <div>
-            <Button type="primary" danger onClick={showModal}>
+            {/* <Button type="primary" danger onClick={showModal}>
               Leave Game
-            </Button>
+            </Button> */}
             <Button danger onClick={showInfoModal}>
               Player Info
             </Button>
-            <Button danger onClick={showSquadModal}>
+            {/* <Button danger onClick={showSquadModal}>
               squad | {user.squadName}
-            </Button>
+            </Button> */}
           </div>
         )}
         {keycloak.hasRealmRole("ADMIN") &&
@@ -261,7 +283,11 @@ function GameDetails() {
       </div>
       <div className="main-container">
         <div className="map-box">
-          <Map center={circleCenter} radius={circleRadius} />
+          <Map
+            center={circleCenter}
+            radius={circleRadius}
+            killData={killData}
+          />
         </div>
         <div className="chat-box">
           <Tabs defaultActiveKey="1" items={items} style={{ color: "black" }} />
@@ -327,7 +353,7 @@ function GameDetails() {
           </Button>
         </div>
       </Modal>
-      {faction === "human" ? (
+      {userObj?.human ? (
         <Modal
           title="Faction: Human"
           open={openInfo}
@@ -344,7 +370,7 @@ function GameDetails() {
             <p>Longitude: {longitude}</p>
           </div>
         </Modal>
-      ) : faction === "zombie" ? (
+      ) : !userObj?.human ? (
         <Modal
           title="Faction: Zombie"
           open={openInfo}
@@ -387,18 +413,17 @@ function GameDetails() {
           </div>
           <p
             style={{
-              // display: "flex",
               fontSize: "16px",
               margin: "0px",
-              // margin: "10px",
-              // alignItems: "center",
-              // textAlign: "center",
-              // width: "60%",
             }}
           >
             Description
           </p>
-          <TextArea placeholder="Description of the kill" />
+          <TextArea
+            placeholder="Description of the kill"
+            value={killdescription}
+            onChange={(e) => setKillDescription(e.target.value)}
+          />
           <div
             style={{
               display: "flex",
@@ -417,12 +442,21 @@ function GameDetails() {
               Enter bite code:
             </p>
 
-            <Input placeholder="Bite code of the human" />
+            <Input
+              placeholder="Bite code of the human"
+              value={killBiteCode}
+              onChange={(e) => setKillBiteCode(e.target.value)}
+            />
             <Button
               danger
               type="primary"
               style={{
                 marginLeft: "10px",
+              }}
+              onClick={() => {
+                createKill(gameId, killBiteCode, userObj.player_id)
+                  .then(setKillBiteCode(""))
+                  .then(setKillDescription(""));
               }}
             >
               Register kill

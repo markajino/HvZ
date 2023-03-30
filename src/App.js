@@ -7,8 +7,6 @@ import Register from "./features/register/Register";
 import CreateGame from "./features/createGame/CreateGame";
 import KeycloakRoute from "./keycloakRoutes";
 
-import keycloak from "./keycloak";
-
 // const router = createBrowserRouter([
 //   {
 //     path: "/",

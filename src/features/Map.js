@@ -7,7 +7,7 @@ import {
 } from "@react-google-maps/api";
 import env from "react-dotenv";
 
-function Map({ width, height, lat, lng, center, radius }) {
+function Map({ width, height, lat, lng, center, radius, killData }) {
   const containerStyle = {
     width: width || "62vw",
     height: height || "35vw",
@@ -16,7 +16,7 @@ function Map({ width, height, lat, lng, center, radius }) {
   };
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyBEEMbebzbqITDL8CS0brSsp1-fJn0gMdg",
+    googleMapsApiKey: env.GOOGLE_MAPS_API_KEY,
   });
   const [circleCenter, setCircleCenter] = React.useState({
     lat: lat,
@@ -101,13 +101,19 @@ function Map({ width, height, lat, lng, center, radius }) {
             zIndex: 1,
           }}
         />
-        {/* <Marker
-          position={center}
-          icon={{
-            url: "https://img.icons8.com/ios-filled/50/null/headstone.png",
-            scaledSize: new window.google.maps.Size(50, 50),
-          }}
-        /> */}
+
+        {killData?.map((kill) => (
+          <Marker
+            position={{
+              lat: kill.lat,
+              lng: kill.lng,
+            }}
+            icon={{
+              url: "https://img.icons8.com/ios-filled/50/null/headstone.png",
+              scaledSize: new window.google.maps.Size(50, 50),
+            }}
+          />
+        ))}
         {/* <Marker
           position={{ lat: latitude, lng: longitude }}
           icon={{

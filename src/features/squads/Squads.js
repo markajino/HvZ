@@ -2,7 +2,7 @@ import { Button, Input, InputNumber, Space, List, Modal } from "antd";
 import React, { useState, useEffect } from "react";
 import "../gamedetail/GameDetails.css";
 import { useSelector } from "react-redux";
-import { createSqaud, GetAllSquads } from "../../API/API";
+import { createSqaud, GetAllSquads, joinSquad } from "../../API/API";
 import keycloak from "../../keycloak";
 
 function Squads({
@@ -15,6 +15,7 @@ function Squads({
   hideJoinSquadModal,
   showJoinSquadModal,
   gameId,
+  userObj,
 }) {
   const user = useSelector((state) => state.user);
   const faction = user.faction;
@@ -47,19 +48,21 @@ function Squads({
   const [refresher, setRefresher] = useState(false);
 
   useEffect(() => {
-    if (faction === "human") {
+    if (userObj?.human) {
       setSquadData(data.filter((squad) => squad.human === true));
-    } else if (faction === "zombie") {
+    } else if (!userObj?.human) {
       setSquadData(data.filter((squad) => squad.human === false));
     }
   }, [faction]);
 
   useEffect(() => {
-    GetAllSquads(gameId).then((res) => {
+    GetAllSquads(gameId, userObj.player_id).then((res) => {
       console.log("Squads", res);
       setSquadData(res.data);
     });
   }, [gameId, refresher]);
+
+  console.log("Squad Data", userObj);
 
   return (
     <div className="squads-tab-box">
@@ -77,12 +80,14 @@ function Squads({
               <Button
                 danger
                 onClick={() => {
-                  createSqaud(gameId, squadName).then((res) => {
-                    // add a player id Attribute after squadName
-                    console.log("Squad Created", res);
-                    setSquadName("");
-                    setRefresher(!refresher);
-                  });
+                  createSqaud(gameId, squadName, userObj?.player_id).then(
+                    (res) => {
+                      // add a player id Attribute after squadName
+                      console.log("Squad Created", res);
+                      setSquadName("");
+                      setRefresher(!refresher);
+                    }
+                  );
                 }}
               >
                 Create
@@ -112,7 +117,14 @@ function Squads({
                 <Button
                   type="primary"
                   danger
-                  onClick={() => showJoinSquadModal()}
+                  onClick={() => {
+                    joinSquad(gameId, squad.squad_id, userObj?.player_id).then(
+                      (res) => {
+                        console.log("Squad Joined", res);
+                        setRefresher(!refresher);
+                      }
+                    );
+                  }}
                 >
                   Join
                 </Button>

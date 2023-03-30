@@ -9,7 +9,7 @@ import "../gamedetail/GameDetails.css";
 import keycloak from "../../keycloak";
 import { deletePlayer, GetAllPlayers, updatePlayer } from "../../API/API";
 
-const ListItems = ({ gameId }) => {
+const ListItems = ({ gameId, userObj }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
@@ -50,7 +50,7 @@ const ListItems = ({ gameId }) => {
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    GetAllPlayers(gameId).then((res) => {
+    GetAllPlayers(gameId, userObj.player_id).then((res) => {
       console.log("Players", res);
       setPlayers(res.data);
       setPlayersInList(res.data);
@@ -71,22 +71,30 @@ const ListItems = ({ gameId }) => {
                 >
                   All
                 </Button>
-                <Button
-                  danger
-                  onClick={() => {
-                    setPlayersInList(players.filter((player) => player.human));
-                  }}
-                >
-                  Humans
-                </Button>
-                <Button
-                  danger
-                  onClick={() => {
-                    setPlayersInList(players.filter((player) => !player.human));
-                  }}
-                >
-                  Zombies
-                </Button>
+                {userObj.human === true || keycloak.hasRealmRole("ADMIN") ? (
+                  <Button
+                    danger
+                    onClick={() => {
+                      setPlayersInList(
+                        players.filter((player) => player.human)
+                      );
+                    }}
+                  >
+                    Humans
+                  </Button>
+                ) : null}
+                {keycloak.hasRealmRole("ADMIN") || !userObj?.human ? (
+                  <Button
+                    danger
+                    onClick={() => {
+                      setPlayersInList(
+                        players.filter((player) => !player.human)
+                      );
+                    }}
+                  >
+                    Zombies
+                  </Button>
+                ) : null}
               </Space>
             </div>
           }
@@ -125,7 +133,9 @@ const ListItems = ({ gameId }) => {
                         }}
                       />
                     </Space>
-                  ) : null}
+                  ) : (
+                    <p>{item?.human ? item?.biteCode : null}</p>
+                  )}
                 </div>
               </div>
             </List.Item>
@@ -210,6 +220,7 @@ const ListItems = ({ gameId }) => {
                 )
               );
               setOpenPlayerDeleteModal(false);
+              setRefresh(!refresh);
             });
           }}
           style={{ marginLeft: "10px" }}

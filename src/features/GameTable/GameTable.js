@@ -9,7 +9,8 @@ import {
   fetchAllGames,
   deleteGame,
   getGame,
-  GetAllPlayers,
+  getUser,
+  joinGame,
 } from "../../API/API";
 import keycloak from "../../keycloak";
 
@@ -25,6 +26,8 @@ export const GameTable = (props) => {
   const [circleCenter, setCircleCenter] = useState(null);
   const [gameData, setGameData] = useState(null);
   const [dataUpdated, setDataUpdated] = useState(false);
+
+  const [playerObj, setPlayerObj] = useState();
 
   const CircleFinder = (nw_lat, nw_lng, se_lat, se_lng) => {
     const R = 6371e3; // Earth's radius in meters
@@ -90,7 +93,7 @@ export const GameTable = (props) => {
     },
     {
       title: "Players",
-      dataIndex: "players",
+      dataIndex: "members",
       sorter: (a, b) => a.players - b.players,
     },
     // {
@@ -99,6 +102,12 @@ export const GameTable = (props) => {
     //   sorter: (a, b) => a.created_at - b.created_at,
     // },
   ];
+  // useEffect(() => {
+  //   getUser().then((res) => {
+  //     console.log("res", res.data);
+  //     setPlayerObj(res.data);
+  //   });
+  // }, []);
 
   console.log(keycloak.token);
   keycloak.hasRealmRole("ADMIN") &&
@@ -131,9 +140,13 @@ export const GameTable = (props) => {
     fetchAllGames().then((res) => {
       setTableData(res.data);
       res.data.map((game) => {
-        GetAllPlayers(game.game_id).then((res) => {
-          game.players = res.data.length;
-        });
+        if (game.state === "REGISTRATION") {
+          game.state = "Registeration";
+        } else if (game.state === "IN_PROGRESS") {
+          game.state = "In Progress";
+        } else if (game.state === "COMPLETED") {
+          game.state = "Completed";
+        }
       });
     });
   }, [dataUpdated]);
@@ -211,10 +224,27 @@ export const GameTable = (props) => {
           <h1>Join game</h1>
 
           <Map width={"30vw"} center={circleCenter} />
-          <p>Are you sure you want to join this game?</p>
-          <Button type="primary" danger>
-            <Link to={`/game/${gameId}`}>Join</Link>
-          </Button>
+          {gameData?.state === "REGISTRATION" ? (
+            <div>
+              <p>Are you sure you want to join this game?</p>
+              <Button
+                type="primary"
+                danger
+                onClick={() => {
+                  joinGame(gameId)
+                    .then(() => setDataUpdated(!dataUpdated))
+                    .then(setOpenjoinGameModal(false))
+                    .then(window.location.replace("/game/" + gameId));
+                }}
+              >
+                Join
+              </Button>
+            </div>
+          ) : gameData?.state === "IN_PROGRESS" ? (
+            <p>Game is in progress</p>
+          ) : (
+            <p>Game is completed</p>
+          )}
         </Modal>
       )}
       <Modal
