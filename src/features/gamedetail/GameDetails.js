@@ -455,6 +455,7 @@ function GameDetails() {
               }}
               onClick={() => {
                 createKill(gameId, killBiteCode, userObj.player_id)
+                .then(setGameRefresher(!gameRefresher))
                   .then(setKillBiteCode(""))
                   .then(setKillDescription(""));
               }}

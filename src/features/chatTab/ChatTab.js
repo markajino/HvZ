@@ -131,7 +131,7 @@ const ChatTab = ({ gameId, userObj }) => {
           onClick={() => {
             const chatmessage = {
               message: message,
-              player: 1, //change this to user.id
+              player: userObj.player_id, //change this to user.id
             };
             // faction will be changed to user.faction
             sendChat(gameId, chatmessage, scope).then((res) => {

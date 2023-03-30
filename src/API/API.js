@@ -85,7 +85,7 @@ export const GetAllSquads = async (gameId, playerId) => {
   const getGamesURL = `${URL}/api/v1/games/${gameId}/squads`;
   const headers = {
     Authorization: `Bearer ${token}`,
-    requestedByPlayerWithId: playerId,
+    requestedByPlayerWithId: playerId || 0,
   };
   try {
     const { data } = await axios.get(getGamesURL, { headers });
@@ -207,7 +207,7 @@ export const getChat = async (gameId, playerId) => {
   const getGamesURL = `${URL}/api/v1/games/${gameId}/chat`;
   const headers = {
     Authorization: `Bearer ${token}`,
-    requestedByPlayerWithId: playerId,
+    requestedByPlayerWithId: playerId || 0,
   };
   try {
     const { data } = await axios.get(getGamesURL, { headers });
@@ -356,6 +356,7 @@ export const createKill = async (gameId, biteCode, killerId) => {
     Authorization: `Bearer ${token}`,
     biteCode: biteCode,
   };
+  console.log("bite1",biteCode)
   const body = {
     killer: killerId,
     time_of_death: new Date(),

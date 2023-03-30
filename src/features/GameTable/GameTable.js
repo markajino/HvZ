@@ -26,6 +26,7 @@ export const GameTable = (props) => {
   const [circleCenter, setCircleCenter] = useState(null);
   const [gameData, setGameData] = useState(null);
   const [dataUpdated, setDataUpdated] = useState(false);
+  const [radius, setRadius] =useState(0)
 
   const [playerObj, setPlayerObj] = useState();
 
@@ -49,13 +50,13 @@ export const GameTable = (props) => {
 
     const centerLat = (nw_lat + se_lat) / 2;
     const centerLng = (nw_lng + se_lng) / 2;
-    const radius = distance / 2;
+    const radius = distance ;
 
     setCircleCenter({
       lat: centerLat,
       lng: centerLng,
     });
-    // setRadius(radius);
+    setRadius(radius);
   };
 
   useEffect(() => {
@@ -78,15 +79,15 @@ export const GameTable = (props) => {
       filters: [
         {
           text: "In progress",
-          value: "IN_PROGRESS",
+          value: "In Progress",
         },
         {
           text: "Registeration",
-          value: "REGISTRATION",
+          value: "Registration",
         },
         {
           text: "Completed",
-          value: "COMPLETED",
+          value: "Completed",
         },
       ],
       onFilter: (value, record) => record.state.startsWith(value),
@@ -141,7 +142,7 @@ export const GameTable = (props) => {
       setTableData(res.data);
       res.data.map((game) => {
         if (game.state === "REGISTRATION") {
-          game.state = "Registeration";
+          game.state = "Registration";
         } else if (game.state === "IN_PROGRESS") {
           game.state = "In Progress";
         } else if (game.state === "COMPLETED") {
@@ -223,7 +224,7 @@ export const GameTable = (props) => {
         >
           <h1>Join game</h1>
 
-          <Map width={"30vw"} center={circleCenter} />
+          <Map width={"30vw"} center={circleCenter} radius={radius} />
           {gameData?.state === "REGISTRATION" ? (
             <div>
               <p>Are you sure you want to join this game?</p>
@@ -234,7 +235,9 @@ export const GameTable = (props) => {
                   joinGame(gameId)
                     .then(() => setDataUpdated(!dataUpdated))
                     .then(setOpenjoinGameModal(false))
-                    .then(window.location.replace("/game/" + gameId));
+                     .then(setTimeout(() => {
+                        window.location.replace("/game/"+gameId)
+                     }, 2000));
                 }}
               >
                 Join
