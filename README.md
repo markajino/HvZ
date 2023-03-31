@@ -10,7 +10,7 @@ https://hv-z.vercel.app/
 ## Installation
 To setup development for this project you need to follow these steps:
 1. Download zip folder
-2. Unzip and open with vscode or any other ide
+2. Unzip and open with vscode or other code editor of choice
 3. Open ides terminal and run `npm install` to install the dependencies
 4. Run `npm start`
 5. Done! Now it should open in your browser at http://localhost:3000
