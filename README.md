@@ -22,5 +22,5 @@ Test the application with one of our pre-created users:
 
 ## Contributors
 - [Giorgos Markozanis](https://github.com/markajino)
-- [Christos Vlachos](https://github.com/markajino)
+- [Christos Vlachos](https://github.com/ChristosVlachos2000)
 
