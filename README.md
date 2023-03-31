@@ -2,7 +2,7 @@
 ## Desription
 This project is about creating a web application for the game Humans vs Zombies.
 
-In the frontend part we used __React__ & __CSS__.
+In the frontend part we used __React__, __HTML__ & __CSS__.
 
 ## Deployed link
 https://hv-z.vercel.app/
