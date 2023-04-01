@@ -1,5 +1,5 @@
 # Humans vs Zombies (HvZ)
-## Desription
+## Description
 This project is about creating a web application for the game Humans vs Zombies.
 
 In the frontend part we used __React__, __HTML__ & __CSS__.
